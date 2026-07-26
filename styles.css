@@ -86,6 +86,10 @@ a.linkbox-link {
   color: rgb(179, 132, 190)
 }
 
+.linkboxes li {
+  font-size: 0.75rem;
+}
+
 .workspace {
   position: relative;
   flex: 1;
