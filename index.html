@@ -1,132 +1,207 @@
-<script>
-  const diagramW = 2047;
-  const diagramH = 939;
-  const EDGE_MARGIN = 140; // larger = more of the diagram stays visible
+<!doctype html>
+<html lang="en">
 
-  const viewport = document.getElementById('viewport');
-  const scene = document.getElementById('scene');
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Econ Flow Diagram</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
 
-  let scale = 0.75;
-  let panX = 0;
-  let panY = 0;
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <h1>Econ Flow Diagram</h1>
+        <p>Drag to pan · Scroll to zoom · Tap or click a node to focus it</p>
+      </div>
+      <div class="controls" aria-label="Zoom controls">
+        <button id="zoom-out" type="button" aria-label="Zoom out">−</button>
+        <button id="reset" type="button" aria-label="Reset view">Reset</button>
+        <button id="zoom-in" type="button" aria-label="Zoom in">+</button>
+      </div>
+    </header>
 
-  const minScale = 0.75;
-  const maxScale = 4;
+    <main class="workspace">
+      <section class="viewport" id="viewport" aria-label="Zoomable diagram">
+        <div class="scene" id="scene">
+          <img class="scene-image" src="diagram.png"> <!-- MAIN BACKGROUND IMAGE -->
+          <div id="hotspots"></div>
+        </div>
+      </section>
+      <section class="links-panel">
+        <ol class="linkboxes">
+          <li>
+            Total HH consumption: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+          <li>
+            This is thing 1: <a href="google.com" class="linkbox-link">gooogle :D</a>
+          </li>
+        </ol>
+      </section>
+    </main>
+  </div>
 
-  function getViewportRect() {
-    return viewport.getBoundingClientRect();
-  }
+  <script>
+    const diagramW = 2047;
+    const diagramH = 939;
 
-  function clampPan() {
-    const rect = getViewportRect();
-    const scaledW = diagramW * scale;
-    const scaledH = diagramH * scale;
+    const viewport = document.getElementById('viewport');
+    const scene = document.getElementById('scene');
 
-    const minX = rect.width - scaledW - EDGE_MARGIN;
-    const maxX = EDGE_MARGIN;
-    const minY = rect.height - scaledH - EDGE_MARGIN;
-    const maxY = EDGE_MARGIN;
+    let scale = 0.75;
+    let panX = 0;
+    let panY = 0;
+    const minScale = 0.75;
+    const maxScale = 4;
 
-    // If the content is smaller than the viewport, keep it centered.
-    if (scaledW + EDGE_MARGIN * 2 <= rect.width) {
-      panX = (rect.width - scaledW) / 2;
-    } else {
-      panX = Math.max(minX, Math.min(maxX, panX));
+    function applyTransform(instant = false) {
+      scene.style.transition = instant ? 'none' : 'transform 180ms ease-out';
+      scene.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
     }
 
-    if (scaledH + EDGE_MARGIN * 2 <= rect.height) {
-      panY = (rect.height - scaledH) / 2;
-    } else {
-      panY = Math.max(minY, Math.min(maxY, panY));
+    function getViewportRect() {
+      return viewport.getBoundingClientRect();
     }
-  }
 
-  function applyTransform(instant = false) {
-    clampPan();
-    scene.style.transition = instant ? 'none' : 'transform 180ms ease-out';
-    scene.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
-  }
+    function setFocus(h, zoom = null) {
+      const rect = getViewportRect();
+      const targetScale = zoom ?? Math.min(maxScale, Math.max(minScale, Math.min(rect.width / (diagramW * 0.28), rect.height / (diagramH * 0.28))));
+      const cx = (h.x + h.w / 2) / 100 * diagramW;
+      const cy = (h.y + h.h / 2) / 100 * diagramH;
 
-  function setFocus(h, zoom = null) {
-    const rect = getViewportRect();
-    const targetScale =
-      zoom ??
-      Math.min(
-        maxScale,
-        Math.max(
-          minScale,
-          Math.min(rect.width / (diagramW * 0.28), rect.height / (diagramH * 0.28))
-        )
-      );
+      scale = targetScale;
+      panX = rect.width / 2 - cx * scale;
+      panY = rect.height / 2 - cy * scale;
 
-    const cx = ((h.x + h.w / 2) / 100) * diagramW;
-    const cy = ((h.y + h.h / 2) / 100) * diagramH;
+      applyTransform();
+      focusTitle.textContent = h.label;
+      focusDesc.textContent = h.desc;
+    }
 
-    scale = targetScale;
-    panX = rect.width / 2 - cx * scale;
-    panY = rect.height / 2 - cy * scale;
+    function resetView() {
+      const rect = getViewportRect();
+      const fit = Math.min(rect.width / diagramW, rect.height / diagramH);
+      scale = Math.max(minScale, fit);
+      panX = (rect.width - diagramW * scale) / 2;
+      panY = (rect.height - diagramH * scale) / 2;
+      applyTransform(true);
+      focusTitle.textContent = 'Overview';
+      focusDesc.textContent = 'Use the nodes to jump around the diagram. The view stays pan- and zoom-friendly on every screen size.';
+    }
 
-    applyTransform();
-    focusTitle.textContent = h.label;
-    focusDesc.textContent = h.desc;
-  }
+    let pointerDown = false;
+    let startX = 0, startY = 0, originX = 0, originY = 0, moved = false;
 
-  function resetView() {
-    const rect = getViewportRect();
-    const fit = Math.min(rect.width / diagramW, rect.height / diagramH);
+    viewport.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.hotspot') || e.target.closest('button')) return;
+      pointerDown = true;
+      moved = false;
+      startX = e.clientX;
+      startY = e.clientY;
+      originX = panX;
+      originY = panY;
+      viewport.setPointerCapture(e.pointerId);
+    });
 
-    scale = Math.max(minScale, fit);
-    panX = (rect.width - diagramW * scale) / 2;
-    panY = (rect.height - diagramH * scale) / 2;
+    viewport.addEventListener('pointermove', (e) => {
+      if (!pointerDown) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (Math.abs(dx) + Math.abs(dy) > 2) moved = true;
+      panX = originX + dx;
+      panY = originY + dy;
+      applyTransform(true);
+    });
 
-    applyTransform(true);
-    focusTitle.textContent = 'Overview';
-    focusDesc.textContent =
-      'Use the nodes to jump around the diagram. The view stays pan- and zoom-friendly on every screen size.';
-  }
+    viewport.addEventListener('pointerup', (e) => {
+      pointerDown = false;
+      try { viewport.releasePointerCapture(e.pointerId); } catch { }
+    });
 
-  let pointerDown = false;
-  let startX = 0, startY = 0, originX = 0, originY = 0, moved = false;
-
-  viewport.addEventListener('pointerdown', (e) => {
-    if (e.target.closest('.hotspot') || e.target.closest('button')) return;
-
-    pointerDown = true;
-    moved = false;
-    startX = e.clientX;
-    startY = e.clientY;
-    originX = panX;
-    originY = panY;
-
-    viewport.setPointerCapture(e.pointerId);
-  });
-
-  viewport.addEventListener('pointermove', (e) => {
-    if (!pointerDown) return;
-
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
-
-    if (Math.abs(dx) + Math.abs(dy) > 2) moved = true;
-
-    panX = originX + dx;
-    panY = originY + dy;
-
-    applyTransform(true);
-  });
-
-  viewport.addEventListener('pointerup', (e) => {
-    pointerDown = false;
-    try {
-      viewport.releasePointerCapture(e.pointerId);
-    } catch {}
-  });
-
-  viewport.addEventListener(
-    'wheel',
-    (e) => {
+    viewport.addEventListener('wheel', (e) => {
       e.preventDefault();
-
       const rect = getViewportRect();
       const mx = e.clientX - rect.left;
       const my = e.clientY - rect.top;
@@ -140,47 +215,40 @@
       panX = mx - beforeX * nextScale;
       panY = my - beforeY * nextScale;
       scale = nextScale;
-
       applyTransform(true);
-    },
-    { passive: false }
-  );
+    }, { passive: false });
 
-  document.getElementById('zoom-in').addEventListener('click', () => {
-    const rect = getViewportRect();
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
+    document.getElementById('zoom-in').addEventListener('click', () => {
+      const rect = getViewportRect();
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+      const beforeX = (cx - panX) / scale;
+      const beforeY = (cy - panY) / scale;
+      scale = Math.min(maxScale, scale * 1.15);
+      panX = cx - beforeX * scale;
+      panY = cy - beforeY * scale;
+      applyTransform();
+    });
 
-    const beforeX = (cx - panX) / scale;
-    const beforeY = (cy - panY) / scale;
+    document.getElementById('zoom-out').addEventListener('click', () => {
+      const rect = getViewportRect();
+      const cx = rect.width / 2;
+      const cy = rect.height / 2;
+      const beforeX = (cx - panX) / scale;
+      const beforeY = (cy - panY) / scale;
+      scale = Math.max(minScale, scale / 1.15);
+      panX = cx - beforeX * scale;
+      panY = cy - beforeY * scale;
+      applyTransform();
+    });
 
-    scale = Math.min(maxScale, scale * 1.15);
-    panX = cx - beforeX * scale;
-    panY = cy - beforeY * scale;
+    document.getElementById('reset').addEventListener('click', resetView);
 
-    applyTransform();
-  });
-
-  document.getElementById('zoom-out').addEventListener('click', () => {
-    const rect = getViewportRect();
-    const cx = rect.width / 2;
-    const cy = rect.height / 2;
-
-    const beforeX = (cx - panX) / scale;
-    const beforeY = (cy - panY) / scale;
-
-    scale = Math.max(minScale, scale / 1.15);
-    panX = cx - beforeX * scale;
-    panY = cy - beforeY * scale;
-
-    applyTransform();
-  });
-
-  document.getElementById('reset').addEventListener('click', resetView);
-
-  window.addEventListener('resize', () => {
+    window.addEventListener('resize', () => {
+      resetView();
+    });
     resetView();
-  });
+  </script>
+</body>
 
-  resetView();
-</script>
+</html>
