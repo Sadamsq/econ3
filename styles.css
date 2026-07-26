@@ -16,6 +16,10 @@ body {
   overflow: hidden;
 }
 
+.scene {
+  transform-origin: 0 0;
+}
+
 .app-shell {
   min-height: 100vh;
   display: flex;
