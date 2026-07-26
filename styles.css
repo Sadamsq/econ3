@@ -68,6 +68,15 @@ body {
   border-color: rgba(255,255,255,0.24);
 }
 
+.links-panel {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  height: auto;
+  width: 20vw;
+  background: red;
+}
+
 .workspace {
   position: relative;
   flex: 1;
