@@ -16,6 +16,10 @@ body {
   overflow: hidden;
 }
 
+li {
+  margin: 0;
+}
+
 .scene {
   transform-origin: 0 0;
 }
